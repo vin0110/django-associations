@@ -195,22 +195,25 @@ class AssociationTest(TestCase):
         kind = self.kinds['livesAt']
 
         # by string
-        items = Association.objects.get_related(
+        q = Association.objects.get_related(
             self.persons[0],
             'livesAt')
+        items = [item for item in q]
         self.assertEquals(2, len(items))
 
         # by kind
-        items1 = Association.objects.get_related(
+        q = Association.objects.get_related(
             self.persons[0],
             kind)
+        items1 = [item for item in q]
         self.assertEquals(2, len(items1))
 
         # with explicit parameter
-        items2 = Association.objects.get_related(
+        q = Association.objects.get_related(
             self.persons[0],
             'livesAt',
             side='left')
+        items2 = [item for item in q]
         self.assertEquals(2, len(items2))
 
         # check
@@ -221,15 +224,17 @@ class AssociationTest(TestCase):
     def test_related_right(self):
         kind_name = 'parentOf'
 
-        items = Association.objects.get_related(
+        q = Association.objects.get_related(
             self.persons[1],
             kind_name,
             side='right')
+        items = [item for item in q]
         self.assertEquals(1, len(items))
 
         # sanity check -- see the side parameter gives different results
-        items = Association.objects.get_related(
+        q = Association.objects.get_related(
             self.persons[1],
             kind_name,
             side='left')
+        items = [item for item in q]
         self.assertEquals(0, len(items))

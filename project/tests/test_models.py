@@ -43,11 +43,13 @@ class ModelsTest(TestCase):
 
     def test_related(self):
         for i in range(len(self.persons)):
-            self.assertEquals(2, len(self.persons[i].related('livesAt')))
+            q = self.persons[i].related('livesAt')
+            items = [item for item in q]
+            self.assertEquals(2, len(items))
 
     def test_related_right(self):
         results = [0, 1, 0, 1, 0, 0]
         for i in range(len(self.persons)):
-            self.assertEquals(
-                results[i],
-                len(self.persons[i].related('parentOf', side='right')))
+            q = self.persons[i].related('parentOf', side='right')
+            items = [item for item in q]
+            self.assertEquals(results[i], len(items))

@@ -113,35 +113,31 @@ class AssociationManager(models.Manager):
         else:
             kind_sql = ''
         if side is None or side == 'left':
-            sql = 'SELECT b.id, b.left_id '\
-                  'FROM associations_association a, '\
+            model = kind.left_type.model_class()
+            sql = 'SELECT DISTINCT m.id '\
+                  'FROM {} m, '\
+                  'associations_association a, '\
                   'associations_association b '\
                   'WHERE b.kind_id=a.kind_id '\
                   'AND a.left_id={} '\
+                  'AND b.left_id=m.id '\
                   'AND a.right_id=b.right_id '\
-                  'AND b.left_id != a.left_id{} '\
-                  'GROUP BY b.left_id'.format(obj.id, kind_sql)
-
-            raw = Association.objects.raw(sql)
-            lst = []
-            for item in raw:
-                lst.append(item.left)
-            return lst
+                  'AND b.left_id != a.left_id{}'
+            return model.objects.raw(sql.format(
+                model._meta.db_table, obj.id, kind_sql))
         if side == 'right':
-            sql = 'SELECT b.id, b.right_id '\
-                  'FROM associations_association a, '\
+            model = kind.right_type.model_class()
+            sql = 'SELECT DISTINCT m.id '\
+                  'FROM {} m, '\
+                  'associations_association a, '\
                   'associations_association b '\
                   'WHERE b.kind_id=a.kind_id '\
                   'AND a.right_id={} '\
+                  'AND b.right_id=m.id '\
                   'AND a.left_id=b.left_id '\
-                  'AND b.right_id != a.right_id{} '\
-                  'GROUP BY b.right_id'.format(obj.id, kind_sql)
-
-            raw = Association.objects.raw(sql)
-            lst = []
-            for item in raw:
-                lst.append(item.right)
-            return lst
+                  'AND b.right_id != a.right_id{}'
+            return model.objects.raw(sql.format(
+                model._meta.db_table, obj.id, kind_sql))
         raise AttributeError(
             "side must be 'left' or 'right' not {}".format(side))
 

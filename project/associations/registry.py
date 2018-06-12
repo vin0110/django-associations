@@ -34,10 +34,10 @@ def register(model, linked_attr='linked', related_attr='related'):
                 model._meta.object_name,
                 related_attr, ))
 
-    # Add linked_method
+    # Add linked method
     setattr(model, linked_attr, linked_to)
 
-    # Add related_method
+    # Add related method
     setattr(model, related_attr, related_to)
 
     # Finally register in registry
