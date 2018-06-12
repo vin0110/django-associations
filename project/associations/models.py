@@ -81,7 +81,31 @@ class AssociationManager(models.Manager):
         raise AttributeError(
             'side parameter must be "left" or "right"; not %s' %
             (side, ))
-            
+
+    def get_related(self, obj, kind):
+        if kind:
+            if isinstance(kind, str):
+                kind = AssociationKind.objects.get(name=kind)
+            if obj.__class__ != kind.left_type.model_class():
+                raise AttributeError(
+                    "kind %s does not link to object %s" %
+                    (kind.name, obj.__class__._meta.model_name))
+            kind_sql = ' and a.kind_id={}'.format(kind.id)
+        else:
+            kind_sql = ''
+        sql = 'SELECT b.id, b.left_id '\
+              'FROM associations_association a, associations_association b '\
+              'WHERE b.kind_id=a.kind_id '\
+              'AND a.left_id={} '\
+              'AND a.right_id=b.right_id '\
+              'AND b.left_id != a.left_id{} '\
+              'GROUP BY b.left_id'.format(obj.id, kind_sql)
+
+        raw = Association.objects.raw(sql)
+        lst = []
+        for item in raw:
+            lst.append(item.left)
+        return lst
 
 
 class Association(models.Model):

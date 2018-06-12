@@ -11,3 +11,6 @@ class ModelAssociationItemManager(models.Manager):
     """
     def linked_to(self, obj, kind, side="left"):
         return Association.objects.get_linked(obj, kind, side)
+
+    def related_to(self, obj, kind=None):
+        return Association.objects.get_related(obj, kind)
