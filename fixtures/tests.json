@@ -1,0 +1,58 @@
+[
+{
+  "model": "tests.person",
+  "pk": 1,
+  "fields": {
+    "name": "Joe"
+  }
+},
+{
+  "model": "tests.person",
+  "pk": 2,
+  "fields": {
+    "name": "Bob"
+  }
+},
+{
+  "model": "tests.person",
+  "pk": 3,
+  "fields": {
+    "name": "Sue"
+  }
+},
+{
+  "model": "tests.person",
+  "pk": 4,
+  "fields": {
+    "name": "Ann"
+  }
+},
+{
+  "model": "tests.person",
+  "pk": 5,
+  "fields": {
+    "name": "Jay"
+  }
+},
+{
+  "model": "tests.person",
+  "pk": 6,
+  "fields": {
+    "name": "Flo"
+  }
+},
+{
+  "model": "tests.address",
+  "pk": 1,
+  "fields": {
+    "street": "123 Main"
+  }
+},
+{
+  "model": "tests.address",
+  "pk": 2,
+  "fields": {
+    "street": "213 Church"
+  }
+}
+]

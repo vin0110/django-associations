@@ -1,0 +1,154 @@
+[
+{
+  "model": "associations.associationkind",
+  "pk": 1,
+  "fields": {
+    "name": "parentOf",
+    "description": null,
+    "left_type": 5,
+    "right_type": 5
+  }
+},
+{
+  "model": "associations.associationkind",
+  "pk": 2,
+  "fields": {
+    "name": "livesAt",
+    "description": null,
+    "left_type": 5,
+    "right_type": 4
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 1,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 1,
+    "right_id": 2
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 2,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 3,
+    "right_id": 2
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 3,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 1,
+    "right_id": 4
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 4,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 3,
+    "right_id": 4
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 5,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 4,
+    "right_id": 6
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 6,
+  "fields": {
+    "kind": 1,
+    "left_type": 5,
+    "right_type": 5,
+    "left_id": 5,
+    "right_id": 6
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 7,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 1,
+    "right_id": 1
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 8,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 2,
+    "right_id": 1
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 9,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 3,
+    "right_id": 1
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 10,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 4,
+    "right_id": 2
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 11,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 5,
+    "right_id": 2
+  }
+},
+{
+  "model": "associations.association",
+  "pk": 12,
+  "fields": {
+    "kind": 2,
+    "left_type": 5,
+    "right_type": 4,
+    "left_id": 6,
+    "right_id": 2
+  }
+}
+]
