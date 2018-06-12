@@ -1,7 +1,6 @@
 """
 Registery for associations. Inspired by Fantomas42/django-tagging
 """
-# from .managers import AssociationDescriptor
 from .models import linked_to, related_to
 
 registry = []

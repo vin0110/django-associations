@@ -57,6 +57,17 @@ class AssociationManager(models.Manager):
 
         return obj
 
+    def get_by_objects(self, kind, left, right):
+        left_type = ContentType.objects.get_for_model(left)
+        right_type = ContentType.objects.get_for_model(right)
+
+        return Association.objects.get(
+            kind=kind,
+            left_type=left_type,
+            right_type=right_type,
+            left_id=left.id,
+            right_id=right.id)
+
     def get_linked(self, obj, kind, side):
         if isinstance(kind, str):
             kind = AssociationKind.objects.get(name=kind)
@@ -86,7 +97,11 @@ class AssociationManager(models.Manager):
         if kind:
             if isinstance(kind, str):
                 kind = AssociationKind.objects.get(name=kind)
-            if obj.__class__ != kind.left_type.model_class():
+            if side == 'left':
+                kind_class = kind.left_type.model_class()
+            else:
+                kind_class = kind.right_type.model_class()
+            if obj.__class__ != kind_class:
                 raise AttributeError(
                     "kind %s does not link to object %s" %
                     (kind.name, obj.__class__._meta.model_name))
