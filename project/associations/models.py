@@ -72,7 +72,11 @@ class AssociationManager(models.Manager):
         if isinstance(kind, str):
             kind = AssociationKind.objects.get(name=kind)
 
-        if obj.__class__ != kind.left_type.model_class():
+        if side == 'left':
+            kind_class = kind.left_type.model_class()
+        else:
+            kind_class = kind.right_type.model_class()
+        if obj.__class__ != kind_class:
             raise AttributeError(
                 "kind %s does not link to object %s" %
                 (kind.name, obj.__class__._meta.model_name))

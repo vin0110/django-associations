@@ -145,6 +145,26 @@ class AssociationTest(TestCase):
         for n in range(len(items)):
             self.assertEquals(items[n].id, items1[n].id)
 
+    def test_linked_address_right(self):
+        kind = self.kinds['livesAt']
+
+        # use string for kind
+        items = Association.objects.get_linked(
+            self.addresses[1],
+            'livesAt',
+            'right')
+        self.assertEquals(3, len(items))
+
+        # use object for kind
+        items1 = Association.objects.get_linked(
+            self.addresses[1],
+            kind,
+            'right')
+        self.assertEquals(3, len(items1))
+
+        for n in range(len(items)):
+            self.assertEquals(items[n].id, items1[n].id)
+
     def test_linked_bad(self):
         # bad kind
         with self.assertRaises(AssociationKind.DoesNotExist):
@@ -152,12 +172,18 @@ class AssociationTest(TestCase):
                 self.persons[0],
                 'doesnotexist',
                 'left')
-        # incorrect object
+        # incorrect object -- left
         with self.assertRaises(AttributeError):
             Association.objects.get_linked(
                 self.addresses[0],
                 'parentOf',
                 'left')
+        # incorrect object -- right
+        with self.assertRaises(AttributeError):
+            Association.objects.get_linked(
+                self.addresses[0],
+                'parentOf',
+                'right')
         # invalid side
         with self.assertRaises(AttributeError):
             Association.objects.get_linked(
@@ -188,7 +214,7 @@ class AssociationTest(TestCase):
         self.assertEquals(2, len(items2))
 
         # check
-        for n in range(3):
+        for n in range(2):
             self.assertEquals(items[n].id, items1[n].id)
             self.assertEquals(items[n].id, items2[n].id)
 
