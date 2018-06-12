@@ -98,6 +98,17 @@ class AssociationManager(models.Manager):
             (side, ))
 
     def get_related(self, obj, kind, side='left'):
+        sql = 'SELECT DISTINCT m.id '\
+              'FROM %(table)s m, '\
+              'associations_association a, '\
+              'associations_association b '\
+              'WHERE b.kind_id=a.kind_id '\
+              'AND a.%(on_hand)s_id=%(id)d '\
+              'AND b.%(on_hand)s_id=m.id '\
+              'AND a.%(off_hand)s_id=b.%(off_hand)s_id '\
+              'AND b.%(on_hand)s_id != a.%(on_hand)s_id%(kind_sql)s'
+
+        dct = dict(id=obj.id)
         if kind:
             if isinstance(kind, str):
                 kind = AssociationKind.objects.get(name=kind)
@@ -109,37 +120,24 @@ class AssociationManager(models.Manager):
                 raise AttributeError(
                     "kind %s does not link to object %s" %
                     (kind.name, obj.__class__._meta.model_name))
-            kind_sql = ' and a.kind_id={}'.format(kind.id)
+            dct['kind_sql'] = ' and a.kind_id={}'.format(kind.id)
         else:
-            kind_sql = ''
+            dct['kind_sql'] = ''
+
         if side is None or side == 'left':
             model = kind.left_type.model_class()
-            sql = 'SELECT DISTINCT m.id '\
-                  'FROM {} m, '\
-                  'associations_association a, '\
-                  'associations_association b '\
-                  'WHERE b.kind_id=a.kind_id '\
-                  'AND a.left_id={} '\
-                  'AND b.left_id=m.id '\
-                  'AND a.right_id=b.right_id '\
-                  'AND b.left_id != a.left_id{}'
-            return model.objects.raw(sql.format(
-                model._meta.db_table, obj.id, kind_sql))
-        if side == 'right':
+            dct['on_hand'] = 'left'
+            dct['off_hand'] = 'right'
+        elif side == 'right':
             model = kind.right_type.model_class()
-            sql = 'SELECT DISTINCT m.id '\
-                  'FROM {} m, '\
-                  'associations_association a, '\
-                  'associations_association b '\
-                  'WHERE b.kind_id=a.kind_id '\
-                  'AND a.right_id={} '\
-                  'AND b.right_id=m.id '\
-                  'AND a.left_id=b.left_id '\
-                  'AND b.right_id != a.right_id{}'
-            return model.objects.raw(sql.format(
-                model._meta.db_table, obj.id, kind_sql))
-        raise AttributeError(
-            "side must be 'left' or 'right' not {}".format(side))
+            dct['on_hand'] = 'right'
+            dct['off_hand'] = 'left'
+        else:
+            raise AttributeError(
+                "side must be 'left' or 'right' not {}".format(side))
+
+        dct['table'] = model._meta.db_table
+        return model.objects.raw(sql % dct)
 
 
 class Association(models.Model):
