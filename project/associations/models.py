@@ -82,7 +82,7 @@ class AssociationManager(models.Manager):
             'side parameter must be "left" or "right"; not %s' %
             (side, ))
 
-    def get_related(self, obj, kind):
+    def get_related(self, obj, kind, side='left'):
         if kind:
             if isinstance(kind, str):
                 kind = AssociationKind.objects.get(name=kind)
@@ -93,19 +93,38 @@ class AssociationManager(models.Manager):
             kind_sql = ' and a.kind_id={}'.format(kind.id)
         else:
             kind_sql = ''
-        sql = 'SELECT b.id, b.left_id '\
-              'FROM associations_association a, associations_association b '\
-              'WHERE b.kind_id=a.kind_id '\
-              'AND a.left_id={} '\
-              'AND a.right_id=b.right_id '\
-              'AND b.left_id != a.left_id{} '\
-              'GROUP BY b.left_id'.format(obj.id, kind_sql)
+        if side is None or side == 'left':
+            sql = 'SELECT b.id, b.left_id '\
+                  'FROM associations_association a, '\
+                  'associations_association b '\
+                  'WHERE b.kind_id=a.kind_id '\
+                  'AND a.left_id={} '\
+                  'AND a.right_id=b.right_id '\
+                  'AND b.left_id != a.left_id{} '\
+                  'GROUP BY b.left_id'.format(obj.id, kind_sql)
 
-        raw = Association.objects.raw(sql)
-        lst = []
-        for item in raw:
-            lst.append(item.left)
-        return lst
+            raw = Association.objects.raw(sql)
+            lst = []
+            for item in raw:
+                lst.append(item.left)
+            return lst
+        if side == 'right':
+            sql = 'SELECT b.id, b.right_id '\
+                  'FROM associations_association a, '\
+                  'associations_association b '\
+                  'WHERE b.kind_id=a.kind_id '\
+                  'AND a.right_id={} '\
+                  'AND a.left_id=b.left_id '\
+                  'AND b.right_id != a.right_id{} '\
+                  'GROUP BY b.right_id'.format(obj.id, kind_sql)
+
+            raw = Association.objects.raw(sql)
+            lst = []
+            for item in raw:
+                lst.append(item.right)
+            return lst
+        raise AttributeError(
+            "side must be 'left' or 'right' not {}".format(side))
 
 
 class Association(models.Model):
@@ -147,3 +166,26 @@ class Association(models.Model):
                             self.kind.right_type.app_label,
                             self.kind.right_type.model,))
         super(Association, self).save(*args, **kwargs)
+
+
+######################
+# model instance method; added when model is registered
+######################
+def linked_to(self, kind, side='left'):
+    '''
+    Returns a query set of items that are linked to this instance
+    via the specific aasociation kind. Side specifies which side of
+    the association this instance is on.
+    '''
+    return Association.objects.get_linked(self, kind, side)
+
+
+def related_to(self, kind=None, side='left'):
+    '''
+    Returns a list of items (of the same model type as this instance)
+    that are related to this instance. Related items have a pair (or more)
+    of associations connecting the two items: ie, both are linked to the
+    the same item. Suppose`Ann parentOF Flo' and 'Tim parentOf Flo' then Ann
+    is related to Tim.
+    '''
+    return Association.objects.get_related(self, kind, side)

@@ -2,7 +2,7 @@
 Registery for associations. Inspired by Fantomas42/django-tagging
 """
 # from .managers import AssociationDescriptor
-from .managers import ModelAssociationItemManager
+from .models import linked_to, related_to
 
 registry = []
 
@@ -14,7 +14,7 @@ class AlreadyRegistered(Exception):
     pass
 
 
-def register(model, association_item_manager_attr='associations'):
+def register(model, linked_attr='linked', related_attr='related'):
     """
     Sets the given model class up for working with association
     """
@@ -22,18 +22,24 @@ def register(model, association_item_manager_attr='associations'):
         raise AlreadyRegistered(
             "The model '%s' has already been registered." %
             model._meta.object_name)
-    if hasattr(model, association_item_manager_attr):
+    if hasattr(model, linked_attr):
         raise AttributeError(
             "'%s' already has an attribute '%s'. You must "
-            "provide a custom association_item_manager_attr to register." % (
+            "provide a custom linked_attr to register." % (
                 model._meta.object_name,
-                association_item_manager_attr,
-            )
-        )
+                linked_attr, ))
+    if hasattr(model, related_attr):
+        raise AttributeError(
+            "'%s' already has an attribute '%s'. You must "
+            "provide a custom related_attr to register." % (
+                model._meta.object_name,
+                related_attr, ))
 
-    # Add custom manager
-    ModelAssociationItemManager().contribute_to_class(
-        model, association_item_manager_attr)
+    # Add linked_method
+    setattr(model, linked_attr, linked_to)
+
+    # Add related_method
+    setattr(model, related_attr, related_to)
 
     # Finally register in registry
     registry.append(model)
