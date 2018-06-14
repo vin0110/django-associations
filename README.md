@@ -16,21 +16,9 @@ Assume we have the following two models.
 class Person(models.Model):
     name = models.CharField(max_length=16)
 
-    class Meta:
-        ordering = ('pk', )
-
-    def __str__(self):
-        return self.name
-
 
 class Address(models.Model):
     street = models.CharField(max_length=32)
-
-    class Meta:
-        ordering = ('pk', )
-
-    def __str__(self):
-        return self.street
 ```
 
 Now suppose we want to make the following associations.
@@ -75,14 +63,14 @@ Add an association as follows.
 
 ```python
 joe = Person.objects.get(name='Joe')
-bob = Person.objects.get(name='Ann')
+bob = Person.objects.get(name=Bo')
 
 Association.objects.define(parentOfKind, joe, bob)
 ```
 
-The above association is read as "Joe is a parent of Ann."
+The above association is read as "Joe is a parent of Bob."
 The order is import.
-The code below completes the associations in the first tables.
+The code below completes the associations in the first table.
 
 ```python
 sue = Person.objects.get(name='Sue')
@@ -104,7 +92,7 @@ The following defines the livesAt associations.
 
 ```python
 main = Address.objects.get(street='123 Main')
-church = Address.objects.get(street=213 Church')
+church = Address.objects.get(street='213 Church')
 
 Association.objects.define(livesAtKind, joe, main)
 Association.objects.define(livesAtKind, sue, main)
@@ -120,7 +108,7 @@ Now that we have defined the parentOf and livesAt associations, here
 are some uses.
 Joe's children:
 
-```
+```python
 >>> joe.linked('parentOf')
 ```
 
@@ -144,7 +132,7 @@ returns
 ```
 
 We can also find instances that are _related_ to an instance.
-Two model instances are related if they each are association with the
+Two model instances are related if they each are associated with the
 same instance.
 For example, Joe is related to Bob via the livesAt association.
 
@@ -172,7 +160,11 @@ set.
 [<Person: Bob>, <Person: Sue>]
 >>> [p for p in joe.related('parentOf')]
 [<Person: Sue>]
+>>> [p for p in sue.related('parentOf')]
+[<Person: Joe>]
 ```
+Joe and Sue are twice related via the parentOf association.
+However, related only returns unique instances.
 
 
 
