@@ -13,15 +13,15 @@ from tests.models import Address
 from associations.models import Association
 from associations.models import AssociationKind
 
-# Person.objects.create(name='Joe')
-# Person.objects.create(name='Bob')
-# Person.objects.create(name='Sue')
-# Person.objects.create(name='Ann')
-# Person.objects.create(name='Jay')
-# Person.objects.create(name='Flo')
+Person.objects.create(name='Joe')
+Person.objects.create(name='Bob')
+Person.objects.create(name='Sue')
+Person.objects.create(name='Ann')
+Person.objects.create(name='Jay')
+Person.objects.create(name='Flo')
 
-# Address.objects.create(street='123 Main')
-# Address.objects.create(street='213 Church')
+Address.objects.create(street='123 Main')
+Address.objects.create(street='213 Church')
 
 AssociationKind.objects.define('parentOf', Person, Person)
 AssociationKind.objects.define('livesAt', Person, Address)

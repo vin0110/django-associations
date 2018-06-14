@@ -139,8 +139,8 @@ For example, Joe is related to Bob via the livesAt association.
   * Joe lives at 123 Main
   * Bob lives at 123 Main
 
-Joe is related to Sue via both the parentOf and the livesAt
-association.
+Joe is related to Sue via both the livesAt and the parentOf (twice)
+associations.
 
   * Joe lives at 123 Main
   * Sue lives at 123 Main
